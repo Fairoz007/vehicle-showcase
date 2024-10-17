@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hot Wheels: Browse the Newest Car Models</title>
+    <title>Browse the Newest Car Models</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="wrapper">
-        <h2><strong>Random images</strong></h2>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search for images..."> <!-- Search input -->
+            <button id="search-button" class="search-button">Search</button> <!-- Search button -->
+        </div>
         <div class="news" id="image-container">
             <!-- Images will be dynamically inserted here -->
         </div>

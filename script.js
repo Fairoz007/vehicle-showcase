@@ -1,18 +1,15 @@
 const apiKey = 'Xe0NKCnPW6GTU0RfevkHW1cR-Z1nawSx8E5vh_RT57c'; // Unsplash Access Key
-const queries = [
-    'bmw', 'lamborghini', 'supra', 'mercedes', 'audi', 'porsche', 
-    'ferrari', 'tesla', 'mustang', 'chevrolet', 
-
-];
 const imageContainer = document.getElementById('image-container');
 const statusElement = document.getElementById('status');
-const maxImages = 100; // Target 100 images for the initial load
+const searchInput = document.getElementById('search-input'); // Reference to the search input
+const searchButton = document.getElementById('search-button'); // Reference to the search button
+const maxImages = 1000; // Target max images for the search
 const imagesPerPage = 30; // Maximum allowed per request by Unsplash
 let totalImagesLoaded = 0;
 
-function getRandomQuery() {
-    const randomIndex = Math.floor(Math.random() * queries.length);
-    return queries[randomIndex];
+function clearImages() {
+    imageContainer.innerHTML = ''; // Clear existing images
+    totalImagesLoaded = 0; // Reset the counter
 }
 
 async function fetchCarImages(query) {
@@ -22,6 +19,11 @@ async function fetchCarImages(query) {
                 Authorization: `Client-ID ${apiKey}`
             }
         });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok'); // Handle errors
+        }
+
         const data = await response.json();
         return data.results || [];
     } catch (error) {
@@ -31,51 +33,68 @@ async function fetchCarImages(query) {
     }
 }
 
-async function loadCarImages() {
+async function loadCarImages(query) {
     statusElement.textContent = 'Loading images...';
+    
+    const photos = await fetchCarImages(query);
 
-    while (totalImagesLoaded < maxImages) {
-        const query = getRandomQuery();
-        const photos = await fetchCarImages(query);
-
-        photos.forEach(photo => {
-            if (totalImagesLoaded < maxImages) {
-                const article = document.createElement('figure');
-                article.classList.add('article');
-
-                const img = document.createElement('img');
-                img.src = photo.urls.regular;
-                img.alt = photo.alt_description || 'Car or motorcycle image';
-
-                // Add click event to open the modal with the larger image
-                img.addEventListener('click', () => openModal(photo.urls.full));
-
-                const figcaption = document.createElement('figcaption');
-                const title = document.createElement('h3');
-                title.textContent = '';
-
-                const description = document.createElement('p');
-                description.textContent = `Photo by ${photo.user.name} on Unsplash`;
-
-                figcaption.appendChild(title);
-                figcaption.appendChild(description);
-                article.appendChild(img);
-                article.appendChild(figcaption);
-
-                imageContainer.appendChild(article);
-                totalImagesLoaded++;
-            }
-        });
-
-        statusElement.textContent = `Loaded ${totalImagesLoaded} images.`;
+    if (photos.length === 0) {
+        statusElement.textContent = 'No images found for this query.';
+        return;
     }
 
-    if (totalImagesLoaded >= maxImages) {
-        statusElement.textContent = `Loaded ${totalImagesLoaded} images successfully.`;
-    } else {
-        statusElement.textContent = `Loaded ${totalImagesLoaded} images. Could not load all due to API limits.`;
-    }
+    photos.forEach(photo => {
+        if (totalImagesLoaded < maxImages) {
+            const article = document.createElement('figure');
+            article.classList.add('article');
+
+            const img = document.createElement('img');
+            img.src = photo.urls.regular;
+            img.alt = photo.alt_description || 'Car image';
+
+            // Add click event to open the modal with the larger image
+            img.addEventListener('click', () => openModal(photo.urls.full));
+
+            const figcaption = document.createElement('figcaption');
+            const title = document.createElement('h3');
+            title.textContent = ''; // Optional: set a title if available
+
+            const description = document.createElement('p');
+            description.textContent = `Photo by ${photo.user.name} on Unsplash`;
+
+            figcaption.appendChild(title);
+            figcaption.appendChild(description);
+            article.appendChild(img);
+            article.appendChild(figcaption);
+
+            imageContainer.appendChild(article);
+            totalImagesLoaded++;
+        }
+    });
+
+    statusElement.textContent = `Loaded ${totalImagesLoaded} images.`;
 }
+
+// Event listener for the search button
+searchButton.addEventListener('click', async () => {
+    const query = searchInput.value.trim();
+    if (query) {
+        clearImages(); // Clear existing images before new search
+        await loadCarImages(query);
+    }
+});
+
+// Event listener for the Enter key in the search input
+searchInput.addEventListener('keypress', async (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission
+        const query = searchInput.value.trim();
+        if (query) {
+            clearImages(); // Clear existing images before new search
+            await loadCarImages(query);
+        }
+    }
+});
 
 // Modal Elements for image preview
 const modal = document.createElement('div');
@@ -110,5 +129,5 @@ modal.addEventListener('click', (e) => {
     }
 });
 
-// Load images when the page loads
-loadCarImages();
+// Load initial images when the page loads (optional)
+loadCarImages('bmw'); // Set an initial query

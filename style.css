@@ -1,129 +1,175 @@
-/* Base Styles */
+:root {
+    --rad: .7rem; /* Border radius */
+    --dur: .3s; /* Duration for transitions */
+    --color-dark: #2f2f2f; /* Dark background color */
+    --color-light: #fff; /* Light background color for inputs */
+    --color-brand: #8a8e92; /* Brand color for buttons */
+    --font-fam: 'Lato', sans-serif; /* Font family */
+    --height: 5rem; /* Height for input and button */
+    --btn-width: 6rem; /* Width for button */
+    --bez: cubic-bezier(0, 0, 0.43, 1.49); /* Timing function */
+}
+
 body {
-    background: #24282f;
-    font-family: 'Alegreya Sans', sans-serif;
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    background: #24282f; /* Background color */
+    font-family: 'Alegreya Sans', sans-serif; /* Font style */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    display: flex; /* Flex layout for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Align items at the top */
+    min-height: 100vh; /* Full height */
 }
 
-h2 {
-    position: relative;
-    color: #ccc;
-    margin-bottom: 20px;
-    font-size: 24px;
-    text-align: center;
+.wrapper {
+    text-align: center; /* Center text */
+    width: 100%; /* Full width */
 }
 
-h2 strong {
-    position: relative;
-    background: #24282f;
-    padding: 4px 8px;
-    z-index: 2;
+.search-container {
+    display: flex; /* Flexbox for horizontal alignment */
+    justify-content: center; /* Center children */
+    margin: 20px auto; /* Center with margin on top */
+    position: relative; /* Position relative for button */
+    width: 30rem; /* Set width for search container */
+    
+    border-radius: var(--rad); /* Rounded corners */
+}
+
+#search-input {
+    padding: 10px; /* Padding for input */
+    font-size: 16px; /* Font size */
+    border-radius: 13px; /* Rounded corners for left side */
+    border: 1px solid #ccc; /* Light border */
+    margin-right: 0; /* No margin on right */
+    width: 100%; /* Full width of the search container */
+    background: var(--color-light); /* Light background for input */
+    transition: all var(--dur) var(--bez); /* Smooth transition */
+}
+
+#search-input:focus {
+    outline: none; /* Remove outline on focus */
+}
+
+.search-button {
+    display: none; /* Hide button by default */
+    height: 40px; /* Height for button */
+    width: 60px; /* Set width for button */
+    font-family: var(--font-fam); /* Font family */
+    font-weight: bold; /* Bold text */
+    background: var(--color-brand); /* Background color for button */
+    color: var(--color-light); /* Text color */
+    border: none; /* No border */
+    border-radius: 0 var(--rad) var(--rad) 0; /* Rounded corners for right side */
+    cursor: pointer; /* Pointer cursor */
+    position: absolute; /* Position button inside search container */
+    top: 0; /* Align to top */
+    right: 0; /* Align to right */
+}
+
+#search-input:not(:placeholder-shown) + .search-button {
+    display: block; /* Show button when input has text */
 }
 
 .news {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+    display: flex; /* Flex layout for image containers */
+    flex-wrap: wrap; /* Wrap images to the next line */
+    gap: 20px; /* Gap between images */
+    justify-content: center; /* Center images */
 }
 
 .article {
-    position: relative;
-    width: 350px;
-    height: 235px;
-    margin: 20px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
-    transition: transform 0.3s ease;
-    border-radius: 8px;
-}
-
-.article img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease, filter 0.3s ease;
+    position: relative; /* Position relative for child elements */
+    width: 350px; /* Width of each image card */
+    height: 235px; /* Height of each image card */
+    margin: 20px; /* Margin for spacing */
+    overflow: hidden; /* Hide overflow */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6); /* Shadow effect */
+    transition: transform 0.3s ease; /* Smooth transition */
+    border-radius: 8px; /* Rounded corners */
     cursor: pointer;
 }
 
+.article img {
+    width: 100%; /* Full width of the card */
+    height: 100%; /* Full height of the card */
+    object-fit: cover; /* Cover image */
+    transition: transform 0.3s ease, filter 0.3s ease; /* Smooth image transition */
+}
+
 .article figcaption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    position: absolute; /* Position absolute for overlay */
+    bottom: 0; /* Align to bottom */
+    left: 0; /* Align to left */
+    right: 0; /* Align to right */
+    padding: 20px; /* Padding */
+    background: rgba(0, 0, 0, 0.7); /* Background with transparency */
+    color: #fff; /* White text */
+    transform: translateY(100%); /* Start hidden */
+    transition: transform 0.3s ease; /* Smooth transition */
+    display: flex; /* Flex layout */
+    flex-direction: column; /* Vertical alignment */
+    justify-content: center; /* Center content */
 }
 
 .article:hover img {
-    filter: blur(3px);
-    transform: scale(1.1);
+    filter: blur(3px); /* Blur effect on hover */
+    transform: scale(1.1); /* Scale effect on hover */
 }
 
 .article:hover figcaption {
-    transform: translateY(0);
+    transform: translateY(0); /* Show caption on hover */
 }
 
 .article h3 {
-    margin: 0;
-    font-size: 18px;
-    color: #3792e3;
-    font-weight: bold;
+    margin: 0; /* No margin */
+    font-size: 18px; /* Font size */
+    color: #3792e3; /* Heading color */
+    font-weight: bold; /* Bold text */
 }
 
 .article p {
-    font-size: 14px;
-    line-height: 1.4;
-    margin-top: 8px;
+    font-size: 14px; /* Font size for paragraph */
+    line-height: 1.4; /* Line height */
+    margin-top: 8px; /* Spacing above */
 }
 
 /* Modal Styles */
 .modal {
     display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    justify-content: center;
-    align-items: center;
+    position: fixed; /* Fixed position */
+    z-index: 1000; /* Layer above other content */
+    left: 0; /* Align to left */
+    top: 0; /* Align to top */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background: rgba(0, 0, 0, 0.8); /* Dark overlay */
+    justify-content: center; /* Center content */
+    align-items: center; /* Center vertically */
 }
 
 .modal-content {
-    max-width: 80%; /* Adjust the max width of the modal content */
-    max-height: 80%; /* Adjust the max height of the modal content */
-    overflow: auto; /* Allow scrolling if content is larger */
+    max-width: 80%; /* Max width */
+    max-height: 80%; /* Max height */
+    overflow: auto; /* Allow scrolling */
 }
 
 .modal-content img {
-    width: 100%; /* Make the image responsive */
+    width: 100%; /* Responsive image */
     height: auto; /* Maintain aspect ratio */
-    max-width: 1000px; /* Set a maximum width to make it smaller */
-    border-radius: 8px; /* Optional: rounding the corners */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6); /* Optional: shadow effect */
+    max-width: 600px; /* Set maximum width */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6); /* Shadow effect */
 }
 
 .modal-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: #fff;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    border-radius: 50%;
-    padding: 5px 10px;
+    position: absolute; /* Absolute positioning */
+    top: 20px; /* Spacing from top */
+    right: 20px; /* Spacing from right */
+    background: #fff; /* Background color */
+    border: none; /* No border */
+    font-size: 24px; /* Font size */
+    cursor: pointer; /* Pointer cursor */
+    border-radius: 50%; /* Circular button */
+    padding: 5px 10px; /* Padding */
 }
