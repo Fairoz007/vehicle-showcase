@@ -10,8 +10,6 @@ body {
     min-height: 100vh;
 }
 
-
-
 h2 {
     position: relative;
     color: #ccc;
@@ -50,6 +48,7 @@ h2 strong {
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease, filter 0.3s ease;
+    cursor: pointer;
 }
 
 .article figcaption {
@@ -87,4 +86,42 @@ h2 strong {
     font-size: 14px;
     line-height: 1.4;
     margin-top: 8px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.modal-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #fff;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 5px 10px;
 }

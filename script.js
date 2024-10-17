@@ -7,18 +7,49 @@ const queries = [
 const imageContainer = document.getElementById('image-container');
 const statusElement = document.getElementById('status');
 const maxImages = 1000;
-const imagesPerPage = 80; // Max allowed per request by Pexels
+const imagesPerPage = 80;
 let totalImagesLoaded = 0;
 
+// Modal Elements
+const modal = document.createElement('div');
+modal.classList.add('modal');
+document.body.appendChild(modal);
+
+const modalContent = document.createElement('div');
+modalContent.classList.add('modal-content');
+modal.appendChild(modalContent);
+
+const modalImage = document.createElement('img');
+modalContent.appendChild(modalImage);
+
+const closeModalButton = document.createElement('button');
+closeModalButton.classList.add('modal-close');
+closeModalButton.innerHTML = '&times;';
+modal.appendChild(closeModalButton);
+
+function openModal(imageSrc) {
+    modalImage.src = imageSrc;
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+closeModalButton.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+
 function getRandomQuery() {
-    // Select a random query from the list of car brands and models
     const randomIndex = Math.floor(Math.random() * queries.length);
     return queries[randomIndex];
 }
 
 function getRandomPageNumber() {
-    // Pexels allows you to search through pages of results; set max page limit as per their documentation.
-    const maxPages = 100; // Adjust according to your needs or API limits.
+    const maxPages = 100;
     return Math.floor(Math.random() * maxPages) + 1;
 }
 
@@ -42,8 +73,6 @@ async function loadCarImages() {
     statusElement.textContent = 'Loading images...';
 
     const totalPages = Math.ceil(maxImages / imagesPerPage);
-
-    // Load images using different queries to ensure variety each time
     for (let i = 0; i < totalPages && totalImagesLoaded < maxImages; i++) {
         const query = getRandomQuery();
         const page = getRandomPageNumber();
@@ -58,10 +87,13 @@ async function loadCarImages() {
                 img.src = photo.src.large;
                 img.alt = photo.alt;
 
+                // Add click event to open the modal with the larger image
+                img.addEventListener('click', () => openModal(photo.src.large));
+
                 const figcaption = document.createElement('figcaption');
                 const title = document.createElement('h3');
-                title.textContent = 'Car Image';
-                
+                title.textContent = 'Image';
+
                 const description = document.createElement('p');
                 description.textContent = `Photo by ${photo.photographer} on Pexels`;
 
@@ -87,4 +119,3 @@ async function loadCarImages() {
 
 // Load images when the page loads
 loadCarImages();
-
