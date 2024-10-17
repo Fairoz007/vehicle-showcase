@@ -1,16 +1,83 @@
-const apiKey = 'fyLbvlwVC8JAnbug9lfc4C9uAlZPUZep1ksB25XYHtnZj0KQcFLMQ9xb';
+const apiKey = 'Xe0NKCnPW6GTU0RfevkHW1cR-Z1nawSx8E5vh_RT57c'; // Unsplash Access Key
 const queries = [
     'bmw', 'lamborghini', 'supra', 'mercedes', 'audi', 'porsche', 
     'ferrari', 'tesla', 'mustang', 'chevrolet', 
-    'ducati', 'kawasaki', 'suzuki', 'vintage motorcycle'
+
 ];
 const imageContainer = document.getElementById('image-container');
 const statusElement = document.getElementById('status');
-const maxImages = 1000;
-const imagesPerPage = 80;
+const maxImages = 100; // Target 100 images for the initial load
+const imagesPerPage = 30; // Maximum allowed per request by Unsplash
 let totalImagesLoaded = 0;
 
-// Modal Elements
+function getRandomQuery() {
+    const randomIndex = Math.floor(Math.random() * queries.length);
+    return queries[randomIndex];
+}
+
+async function fetchCarImages(query) {
+    try {
+        const response = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=${imagesPerPage}`, {
+            headers: {
+                Authorization: `Client-ID ${apiKey}`
+            }
+        });
+        const data = await response.json();
+        return data.results || [];
+    } catch (error) {
+        console.error('Error fetching images:', error);
+        statusElement.textContent = 'Error loading images. Please try again later.';
+        return [];
+    }
+}
+
+async function loadCarImages() {
+    statusElement.textContent = 'Loading images...';
+
+    while (totalImagesLoaded < maxImages) {
+        const query = getRandomQuery();
+        const photos = await fetchCarImages(query);
+
+        photos.forEach(photo => {
+            if (totalImagesLoaded < maxImages) {
+                const article = document.createElement('figure');
+                article.classList.add('article');
+
+                const img = document.createElement('img');
+                img.src = photo.urls.regular;
+                img.alt = photo.alt_description || 'Car or motorcycle image';
+
+                // Add click event to open the modal with the larger image
+                img.addEventListener('click', () => openModal(photo.urls.full));
+
+                const figcaption = document.createElement('figcaption');
+                const title = document.createElement('h3');
+                title.textContent = '';
+
+                const description = document.createElement('p');
+                description.textContent = `Photo by ${photo.user.name} on Unsplash`;
+
+                figcaption.appendChild(title);
+                figcaption.appendChild(description);
+                article.appendChild(img);
+                article.appendChild(figcaption);
+
+                imageContainer.appendChild(article);
+                totalImagesLoaded++;
+            }
+        });
+
+        statusElement.textContent = `Loaded ${totalImagesLoaded} images.`;
+    }
+
+    if (totalImagesLoaded >= maxImages) {
+        statusElement.textContent = `Loaded ${totalImagesLoaded} images successfully.`;
+    } else {
+        statusElement.textContent = `Loaded ${totalImagesLoaded} images. Could not load all due to API limits.`;
+    }
+}
+
+// Modal Elements for image preview
 const modal = document.createElement('div');
 modal.classList.add('modal');
 document.body.appendChild(modal);
@@ -42,80 +109,6 @@ modal.addEventListener('click', (e) => {
         closeModal();
     }
 });
-
-function getRandomQuery() {
-    const randomIndex = Math.floor(Math.random() * queries.length);
-    return queries[randomIndex];
-}
-
-function getRandomPageNumber() {
-    const maxPages = 100;
-    return Math.floor(Math.random() * maxPages) + 1;
-}
-
-async function fetchCarImages(query, page) {
-    try {
-        const response = await fetch(`https://api.pexels.com/v1/search?query=${query}&per_page=${imagesPerPage}&page=${page}`, {
-            headers: {
-                Authorization: apiKey
-            }
-        });
-        const data = await response.json();
-        return data.photos || [];
-    } catch (error) {
-        console.error('Error fetching images:', error);
-        statusElement.textContent = 'Error loading images. Please try again later.';
-        return [];
-    }
-}
-
-async function loadCarImages() {
-    statusElement.textContent = 'Loading images...';
-
-    const totalPages = Math.ceil(maxImages / imagesPerPage);
-    for (let i = 0; i < totalPages && totalImagesLoaded < maxImages; i++) {
-        const query = getRandomQuery();
-        const page = getRandomPageNumber();
-        const photos = await fetchCarImages(query, page);
-
-        photos.forEach(photo => {
-            if (totalImagesLoaded < maxImages) {
-                const article = document.createElement('figure');
-                article.classList.add('article');
-
-                const img = document.createElement('img');
-                img.src = photo.src.large;
-                img.alt = photo.alt;
-
-                // Add click event to open the modal with the larger image
-                img.addEventListener('click', () => openModal(photo.src.large));
-
-                const figcaption = document.createElement('figcaption');
-                const title = document.createElement('h3');
-                title.textContent = 'Image';
-
-                const description = document.createElement('p');
-                description.textContent = `Photo by ${photo.photographer} on Pexels`;
-
-                figcaption.appendChild(title);
-                figcaption.appendChild(description);
-                article.appendChild(img);
-                article.appendChild(figcaption);
-
-                imageContainer.appendChild(article);
-                totalImagesLoaded++;
-            }
-        });
-
-        statusElement.textContent = `Loaded ${totalImagesLoaded} images.`;
-    }
-
-    if (totalImagesLoaded >= maxImages) {
-        statusElement.textContent = `Loaded ${totalImagesLoaded} images successfully.`;
-    } else {
-        statusElement.textContent = `Loaded ${totalImagesLoaded} images. Could not load all due to API limits.`;
-    }
-}
 
 // Load images when the page loads
 loadCarImages();

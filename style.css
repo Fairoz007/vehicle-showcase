@@ -103,15 +103,17 @@ h2 strong {
 }
 
 .modal-content {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 80%; /* Adjust the max width of the modal content */
+    max-height: 80%; /* Adjust the max height of the modal content */
+    overflow: auto; /* Allow scrolling if content is larger */
 }
 
 .modal-content img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+    width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 1000px; /* Set a maximum width to make it smaller */
+    border-radius: 8px; /* Optional: rounding the corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6); /* Optional: shadow effect */
 }
 
 .modal-close {
